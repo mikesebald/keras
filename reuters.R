@@ -71,6 +71,7 @@ history <- model %>% fit(
   validation_data = list(x_val, y_val)
 )
 
+
 results <- model %>% evaluate(x_test, one_hot_test_labels)
 results$loss
 results$acc
