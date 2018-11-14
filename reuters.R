@@ -46,6 +46,12 @@ x_test <- vectorize_sequences(test_data)
 one_hot_train_labels <- to_categorical(train_labels)
 one_hot_test_labels <- to_categorical(test_labels)
 
+val_indices <- 1:1000
+x_val <- x_train[val_indices, ]
+partial_x_train <- x_train[-val_indices, ]
+y_val <- one_hot_train_labels[val_indices, ]
+partial_y_train = one_hot_train_labels[-val_indices, ]
+
 model <- keras_model_sequential() %>%
   layer_dense(units = 64, activation = "relu", input_shape = c(10000)) %>%
   layer_dense(units = 64, activation = "relu") %>%
@@ -57,17 +63,25 @@ model %>% compile(
   metrics = c("accuracy")
 )
 
-val_indices <- 1:1000
-x_val <- x_train[val_indices, ]
-partial_x_train <- x_train[-val_indices, ]
-y_val <- one_hot_train_labels[val_indices, ]
-partial_y_train = one_hot_train_labels[-val_indices, ]
-
 history <- model %>% fit(
   partial_x_train,
   partial_y_train,
-  epochs = 20,
+  epochs = 9,
   batch_size = 512,
   validation_data = list(x_val, y_val)
 )
+
+results <- model %>% evaluate(x_test, one_hot_test_labels)
+results$loss
+results$acc
+
+predictions <- predict(model, x_test)
+dim(predictions)
+sum(predictions[1, ])
+
+predictions[1, ] * 100
+max(predictions[1, ])
+which.max(predictions[1, ])
+
+
 
