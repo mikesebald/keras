@@ -1,5 +1,8 @@
 library(keras)
 
+# for Tensorboard, launch
+# c:\tensorboard --logdir=c:/temp
+
 rm(list = ls())
 
 reuters <- dataset_reuters(num_words = 10000)
@@ -68,6 +71,7 @@ history <- model %>% fit(
   partial_y_train,
   epochs = 9,
   batch_size = 512,
+  callbacks = callback_tensorboard("c:/temp/"),
   validation_data = list(x_val, y_val)
 )
 
